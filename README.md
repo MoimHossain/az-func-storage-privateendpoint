@@ -1,2 +1,5 @@
-# az-func-storage-privateendpoint
-Demo repo shows private endpoint with storage accounts and az funcs
+
+
+```
+az deployment group create --resource-group 'trojan-resources'  --template-file .\all.bicep
+```
