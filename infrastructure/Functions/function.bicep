@@ -3,7 +3,7 @@ param appName string
 param planName string
 param appInsightName string
 param resourceTags object 
-
+param contentShareName string
 param subnetId string
 param storageAccountName string
 param storageAccountKey string
@@ -79,7 +79,11 @@ resource functionApp 'Microsoft.Web/sites@2021-01-01' = {
         {
           name: 'WEBSITE_CONTENTOVERVNET'
           value: '1'
-        }       
+        }
+        {
+          name: 'WEBSITE_CONTENTSHARE'
+          value: contentShareName
+        }
       ]
     }
   }

@@ -3,6 +3,7 @@ param name string
 param resourceTags object 
 param vnetId string
 param privateLinkSubnetId string
+param fileShareName string
 
 var queuePEName = 'queuepep${name}'
 var blobPEName = 'blobpep${name}'
@@ -94,6 +95,13 @@ module fileStoragePrivateEndpoint '../network/storagePE.bicep' = {
     vnetId: vnetId
     subnetId: privateLinkSubnetId
   }
+  dependsOn: [
+    storage
+  ]
+}
+
+resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-04-01' = {
+  name: '${storage.name}/default/${fileShareName}'
   dependsOn: [
     storage
   ]
