@@ -6,12 +6,11 @@ param resourceTags object = {
   Owner: 'Moim.Hossain@microsoft.com'
 }
 
+var functionAppName = 'vulfumsft001'
 var vnetName = 'vulture-vnet'
 var storageAcountName = 'vsa${uniqueString(resourceGroup().name)}'
-var queuePEName = 'queuepep${storageAcountName}'
-var queueDnsZoneName = 'queueDnsZone'
-var blobPEName = 'blobpep${storageAcountName}'
-var blobDnsZoneName = 'blobDnsZone'
+
+
 
 module network 'network/vnet.bicep' = {
   name: vnetName
@@ -29,43 +28,24 @@ module storage 'storage/storage.bicep' = {
     resourceTags: resourceTags
     location: location
     name: storageAcountName
-  }
-}
-
-module queueStoragePrivateEndpoint 'network/storagePE.bicep' = {
-  name: queuePEName
-  params: {
-    location: location
-    privateEndpointName: queuePEName
-    privateDnsZoneName: queueDnsZoneName
-    storageAcountName: storageAcountName
-    groupId: 'queue'
-    resourceTags: resourceTags
-    storageAccountId: storage.outputs.storageId
     vnetId: network.outputs.vnetId
-    subnetId: network.outputs.privateLinkSubnetId
+    privateLinkSubnetId: network.outputs.privateLinkSubnetId
   }
-  dependsOn: [
-    storage
-  ]
 }
 
-module blobStoragePrivateEndpoint 'network/storagePE.bicep' = {
-  name: blobPEName
-  params: {
-    location: location
-    privateEndpointName: blobPEName
-    privateDnsZoneName: blobDnsZoneName
-    storageAcountName: storageAcountName
-    groupId: 'blob'
-    resourceTags: resourceTags
-    storageAccountId: storage.outputs.storageId
-    vnetId: network.outputs.vnetId
-    subnetId: network.outputs.privateLinkSubnetId
-  }
-  dependsOn: [
-    storage
-  ]
-}
-
-
+// module functionApp 'Functions/function.bicep' = {
+//   name: functionAppName
+//   dependsOn: [
+//     storage    
+//   ]
+//   params: {
+//     location: location
+//     subnetId: network.outputs.paasSubnetId
+//     appName: functionAppName
+//     planName: '${functionAppName}plan'
+//     storageAccountName: storage.outputs.name
+//     storageAccountKey: storage.outputs.key
+//     appInsightName: '${functionAppName}-ai'
+//     resourceTags: resourceTags
+//   }
+// }

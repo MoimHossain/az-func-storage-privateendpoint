@@ -17,3 +17,5 @@ resource DnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2
     ]
   }
 }
+
+output dnsZoneGroupId string = DnsZoneGroup.id

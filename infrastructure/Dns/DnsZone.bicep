@@ -24,6 +24,9 @@ resource vnetLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-0
     }
     registrationEnabled: false
   }
+  dependsOn: [
+    dnsZone
+  ]
 }
 
 module DnsZoneGroup 'DnsZoneGroups.bicep' = {
@@ -34,6 +37,11 @@ module DnsZoneGroup 'DnsZoneGroups.bicep' = {
     privateDnsZoneId: dnsZone.id
     privateEndpointName: privateEndpointName
   }
+  dependsOn: [
+    vnetLinks
+  ]
 }
 
 output dnsZoneId string = dnsZone.id
+output vnetLinksLink string = vnetLinks.id
+output dnsZoneGroupId string = DnsZoneGroup.outputs.dnsZoneGroupId

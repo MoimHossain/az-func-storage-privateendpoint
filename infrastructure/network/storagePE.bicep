@@ -44,3 +44,7 @@ module dnsZone '../Dns/DnsZone.bicep' = {
   ]
 }
 
+output privateEndpointId string = privateEndpoint.id
+output dnsZoneId string = dnsZone.outputs.dnsZoneId
+output dnsZoneGroupId string = dnsZone.outputs.dnsZoneGroupId
+output vnetLinksId string = dnsZone.outputs.vnetLinksLink

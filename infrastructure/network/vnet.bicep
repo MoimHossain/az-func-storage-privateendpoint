@@ -2,9 +2,12 @@ param location string
 param vnetName string
 param resourceTags object 
 param vnetAddressSpace string = '10.200.0.0/24'
-param coreSubnetAddressSpace string = '10.200.0.0/27'
 
 var privateLinkSubnetName = 'privatelink-subnet'
+param privateLinkSubnetAddressSpace string = '10.200.0.0/27'
+
+var paasSubnetName = 'paas-subnet'
+param paasSubnetAddressSpace string = '10.200.0.32/28'
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-03-01' = {
   name: vnetName
@@ -21,9 +24,25 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-03-01' = {
       {
         name: privateLinkSubnetName
         properties: {
-          addressPrefix: coreSubnetAddressSpace
+          addressPrefix: privateLinkSubnetAddressSpace
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+      }
+      {
+        name: paasSubnetName
+        properties: {
+          addressPrefix: paasSubnetAddressSpace
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+          delegations: [
+            {
+              name: 'webapp'
+              properties: {
+                serviceName: 'Microsoft.Web/serverFarms'
+              }
+            }
+          ]
         }
       }
     ]
@@ -32,3 +51,4 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-03-01' = {
 
 output vnetId string = vnet.id
 output privateLinkSubnetId string = '${vnet.id}/subnets/${privateLinkSubnetName}'
+output paasSubnetId string = '${vnet.id}/subnets/${paasSubnetName}'
